@@ -1,0 +1,18 @@
+arsoft_articulo_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: ARSOFTArticuloBundle:Default:index }
+
+arsoft_articulos_index:
+    pattern: /listado/
+    defaults: { _controller: ARSOFTArticuloBundle:Articulos:index }
+
+arsoft_articulos_show:
+    pattern: /articulos/{id}/
+    defaults: { _controller: ARSOFTArticuloBundle:ShowArticulo:show, id: 2 }
+    requirements:
+        id: '\d{1,2}'
+
+arsoft_articulos_default:
+    pattern: /articulos/
+    defaults: { _controller: ARSOFTArticuloBundle:ShowArticulo:show, id: 2 }
+

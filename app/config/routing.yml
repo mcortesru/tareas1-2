@@ -1,0 +1,4 @@
+arsoft_articulo:
+    resource: "@ARSOFTArticuloBundle/Resources/config/routing.yml"
+    prefix:   /
+

@@ -1,0 +1,7 @@
+parameters:
+#    arsoft_articulo.example.class: ARSOFT\ArticuloBundle\Example
+
+services:
+#    arsoft_articulo.example:
+#        class: %arsoft_articulo.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
