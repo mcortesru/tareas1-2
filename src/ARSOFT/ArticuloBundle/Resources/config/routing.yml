@@ -3,16 +3,12 @@ arsoft_articulo_homepage:
     defaults: { _controller: ARSOFTArticuloBundle:Default:index }
 
 arsoft_articulos_index:
-    pattern: /listado/
-    defaults: { _controller: ARSOFTArticuloBundle:Articulos:index }
+    pattern: /listado
+    defaults: { _controller: ARSOFTArticuloBundle:Default:listar }
 
 arsoft_articulos_show:
-    pattern: /articulos/{id}/
-    defaults: { _controller: ARSOFTArticuloBundle:ShowArticulo:show, id: 2 }
-    requirements:
-        id: '\d{1,2}'
+    pattern: /articulos/{id}
+    defaults: { _controller: ARSOFTArticuloBundle:Default:show, id: 2 }
 
-arsoft_articulos_default:
-    pattern: /articulos/
-    defaults: { _controller: ARSOFTArticuloBundle:ShowArticulo:show, id: 2 }
+
 
