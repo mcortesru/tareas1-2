@@ -60,10 +60,6 @@ class ViolationMapperTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!class_exists('Symfony\Component\EventDispatcher\Event')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
-        }
-
         $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->mapper = new ViolationMapper();
         $this->message = 'Message';
@@ -168,7 +164,7 @@ class ViolationMapperTest extends \PHPUnit_Framework_TestCase
         $child = $this->getForm('address', 'address', null, array(), false, false);
         // even though "street" is synchronized, it should not have any errors
         // due to its parent not being synchronized
-        $grandChild = $this->getForm('street' , 'street');
+        $grandChild = $this->getForm('street', 'street');
 
         $parent->add($child);
         $child->add($grandChild);
@@ -712,14 +708,14 @@ class ViolationMapperTest extends \PHPUnit_Framework_TestCase
             array(self::LEVEL_2, 'address', '[address]', 'street', '[office][street]', 'data[address][office][street].prop'),
 
             // Edge cases which must not occur
-            array(self::LEVEL_1, 'address', 'address', 'street', 'street', 'children[address][street]'),
-            array(self::LEVEL_1, 'address', 'address', 'street', 'street', 'children[address][street].prop'),
-            array(self::LEVEL_1, 'address', 'address', 'street', '[street]', 'children[address][street]'),
-            array(self::LEVEL_1, 'address', 'address', 'street', '[street]', 'children[address][street].prop'),
-            array(self::LEVEL_1, 'address', '[address]', 'street', 'street', 'children[address][street]'),
-            array(self::LEVEL_1, 'address', '[address]', 'street', 'street', 'children[address][street].prop'),
-            array(self::LEVEL_1, 'address', '[address]', 'street', '[street]', 'children[address][street]'),
-            array(self::LEVEL_1, 'address', '[address]', 'street', '[street]', 'children[address][street].prop'),
+            array(self::LEVEL_2, 'address', 'address', 'street', 'street', 'children[address][street]'),
+            array(self::LEVEL_2, 'address', 'address', 'street', 'street', 'children[address][street].prop'),
+            array(self::LEVEL_2, 'address', 'address', 'street', '[street]', 'children[address][street]'),
+            array(self::LEVEL_2, 'address', 'address', 'street', '[street]', 'children[address][street].prop'),
+            array(self::LEVEL_2, 'address', '[address]', 'street', 'street', 'children[address][street]'),
+            array(self::LEVEL_2, 'address', '[address]', 'street', 'street', 'children[address][street].prop'),
+            array(self::LEVEL_2, 'address', '[address]', 'street', '[street]', 'children[address][street]'),
+            array(self::LEVEL_2, 'address', '[address]', 'street', '[street]', 'children[address][street].prop'),
 
             array(self::LEVEL_0, 'address', 'person.address', 'street', 'street', 'children[person].children[address].children[street]'),
             array(self::LEVEL_0, 'address', 'person.address', 'street', 'street', 'children[person].children[address].data.street'),
@@ -1477,5 +1473,43 @@ class ViolationMapperTest extends \PHPUnit_Framework_TestCase
             $this->assertCount(0, $child->getErrors(), $childName.' should not have an error, but has one');
             $this->assertEquals(array($this->getFormError()), $grandChild->getErrors(), $grandChildName.' should have an error, but has none');
         }
+    }
+
+    public function testBacktrackIfSeveralSubFormsWithSamePropertyPath()
+    {
+        $parent = $this->getForm('parent');
+        $child1 = $this->getForm('subform1', 'address');
+        $child2 = $this->getForm('subform2', 'address');
+        $child3 = $this->getForm('subform3', null, null, array(), true);
+        $child4 = $this->getForm('subform4', null, null, array(), true);
+        $grandChild1 = $this->getForm('street');
+        $grandChild2 = $this->getForm('street', '[sub_address1_street]');
+        $grandChild3 = $this->getForm('street', '[sub_address2_street]');
+
+        $parent->add($child1);
+        $parent->add($child2);
+        $parent->add($child3);
+        $parent->add($child4);
+        $child2->add($grandChild1);
+        $child3->add($grandChild2);
+        $child4->add($grandChild3);
+
+        $parent->submit(array());
+
+        $violation1 = $this->getConstraintViolation('data.address[street]');
+        $violation2 = $this->getConstraintViolation('data[sub_address1_street]');
+        $violation3 = $this->getConstraintViolation('data[sub_address2_street]');
+        $this->mapper->mapViolation($violation1, $parent);
+        $this->mapper->mapViolation($violation2, $parent);
+        $this->mapper->mapViolation($violation3, $parent);
+
+        $this->assertCount(0, $parent->getErrors(), $parent->getName().' should not have an error, but has one');
+        $this->assertCount(0, $child1->getErrors(), $child1->getName().' should not have an error, but has one');
+        $this->assertCount(0, $child2->getErrors(), $child2->getName().' should not have an error, but has one');
+        $this->assertCount(0, $child3->getErrors(), $child3->getName().' should not have an error, but has one');
+        $this->assertCount(0, $child4->getErrors(), $child4->getName().' should not have an error, but has one');
+        $this->assertEquals(array($this->getFormError($violation1, $grandChild1)), $grandChild1->getErrors(), $grandChild1->getName().' should have an error, but has none');
+        $this->assertEquals(array($this->getFormError($violation2, $grandChild2)), $grandChild2->getErrors(), $grandChild2->getName().' should have an error, but has none');
+        $this->assertEquals(array($this->getFormError($violation3, $grandChild3)), $grandChild3->getErrors(), $grandChild3->getName().' should have an error, but has none');
     }
 }

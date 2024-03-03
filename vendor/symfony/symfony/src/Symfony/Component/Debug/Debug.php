@@ -30,8 +30,8 @@ class Debug
      * If the Symfony ClassLoader component is available, a special
      * class loader is also registered.
      *
-     * @param integer $errorReportingLevel The level of error reporting you want
-     * @param Boolean $displayErrors       Whether to display errors (for development) or just log them (for production)
+     * @param int  $errorReportingLevel The level of error reporting you want
+     * @param bool $displayErrors       Whether to display errors (for development) or just log them (for production)
      */
     public static function enable($errorReportingLevel = null, $displayErrors = true)
     {
@@ -44,8 +44,32 @@ class Debug
         error_reporting(-1);
 
         ErrorHandler::register($errorReportingLevel, $displayErrors);
-        if ('cli' !== php_sapi_name()) {
+        if ('cli' !== PHP_SAPI) {
             ExceptionHandler::register();
+
+            if (PHP_VERSION_ID >= 70000) {
+                $exceptionHandler = set_exception_handler(function ($throwable) use (&$exceptionHandler) {
+                    if ($throwable instanceof \Exception) {
+                        $exception = $throwable;
+                    } else {
+                        static $refl = null;
+
+                        if (null === $refl) {
+                            $refl = array();
+                            foreach (array('file', 'line', 'trace') as $prop) {
+                                $prop = new \ReflectionProperty('Exception', $prop);
+                                $prop->setAccessible(true);
+                                $refl[] = $prop;
+                            }
+                        }
+                        $exception = new \Exception($throwable->getMessage(), $throwable->getCode());
+                        foreach ($refl as $prop) {
+                            $prop->setValue($exception, $throwable->{'get'.$prop->name}());
+                        }
+                    }
+                    $exceptionHandler($exception);
+                });
+            }
         // CLI - display errors only if they're not already logged to STDERR
         } elseif ($displayErrors && (!ini_get('log_errors') || ini_get('error_log'))) {
             ini_set('display_errors', 1);

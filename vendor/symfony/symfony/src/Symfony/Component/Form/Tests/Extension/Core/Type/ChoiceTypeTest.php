@@ -43,7 +43,7 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
         'Doctrine' => array(
             'd' => 'Jon',
             'e' => 'Roman',
-        )
+        ),
     );
 
     protected function setUp()
@@ -67,16 +67,6 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error
-     */
-    public function testChoicesOptionExpectsArray()
-    {
-        $this->factory->create('choice', null, array(
-            'choices' => new \ArrayObject(),
-        ));
-    }
-
-    /**
      * @expectedException \Symfony\Component\OptionsResolver\Exception\InvalidOptionsException
      */
     public function testChoiceListOptionExpectsChoiceListInterface()
@@ -94,8 +84,8 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     public function testExpandedChoicesOptionsTurnIntoChildren()
     {
         $form = $this->factory->create('choice', null, array(
-            'expanded'  => true,
-            'choices'   => $this->choices,
+            'expanded' => true,
+            'choices' => $this->choices,
         ));
 
         $this->assertCount(count($this->choices), $form, 'Each choice should become a new field');
@@ -104,10 +94,10 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     public function testPlaceholderPresentOnNonRequiredExpandedSingleChoice()
     {
         $form = $this->factory->create('choice', null, array(
-            'multiple'  => false,
-            'expanded'  => true,
-            'required'  => false,
-            'choices'   => $this->choices,
+            'multiple' => false,
+            'expanded' => true,
+            'required' => false,
+            'choices' => $this->choices,
         ));
 
         $this->assertTrue(isset($form['placeholder']));
@@ -117,10 +107,10 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     public function testPlaceholderNotPresentIfRequired()
     {
         $form = $this->factory->create('choice', null, array(
-            'multiple'  => false,
-            'expanded'  => true,
-            'required'  => true,
-            'choices'   => $this->choices,
+            'multiple' => false,
+            'expanded' => true,
+            'required' => true,
+            'choices' => $this->choices,
         ));
 
         $this->assertFalse(isset($form['placeholder']));
@@ -130,10 +120,10 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     public function testPlaceholderNotPresentIfMultiple()
     {
         $form = $this->factory->create('choice', null, array(
-            'multiple'  => true,
-            'expanded'  => true,
-            'required'  => false,
-            'choices'   => $this->choices,
+            'multiple' => true,
+            'expanded' => true,
+            'required' => false,
+            'choices' => $this->choices,
         ));
 
         $this->assertFalse(isset($form['placeholder']));
@@ -143,9 +133,9 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     public function testPlaceholderNotPresentIfEmptyChoice()
     {
         $form = $this->factory->create('choice', null, array(
-            'multiple'  => false,
-            'expanded'  => true,
-            'required'  => false,
+            'multiple' => false,
+            'expanded' => true,
+            'required' => false,
             'choices' => array(
                 '' => 'Empty',
                 1 => 'Not empty',
@@ -159,8 +149,8 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
     public function testExpandedChoicesOptionsAreFlattened()
     {
         $form = $this->factory->create('choice', null, array(
-            'expanded'  => true,
-            'choices'   => $this->groupedChoices,
+            'expanded' => true,
+            'choices' => $this->groupedChoices,
         ));
 
         $flattened = array();
@@ -380,7 +370,7 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
 
         $form->submit('foobar');
 
-        $this->assertSame(null, $form->getData());
+        $this->assertNull($form->getData());
         $this->assertSame('foobar', $form->getViewData());
         $this->assertEmpty($form->getExtraData());
         $this->assertFalse($form->isSynchronized());
@@ -445,7 +435,7 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
 
         $form->submit('foobar');
 
-        $this->assertSame(null, $form->getData());
+        $this->assertNull($form->getData());
         $this->assertSame('foobar', $form->getViewData());
         $this->assertEmpty($form->getExtraData());
         $this->assertFalse($form->isSynchronized());
@@ -868,7 +858,7 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
                 '' => 'Empty',
                 1 => 'Not Empty',
                 2 => 'Not Empty 2',
-            )
+            ),
         ));
 
         $form->submit(array('', '2'));
@@ -1214,6 +1204,47 @@ class ChoiceTypeTest extends \Symfony\Component\Form\Test\TypeTestCase
         $this->factory->createNamed('name', 'choice', null, array(
             'choices' => array(),
         ));
+    }
+
+    // https://github.com/symfony/symfony/issues/10409
+    public function testReuseNonUtf8ChoiceLists()
+    {
+        $form1 = $this->factory->createNamed('name', 'choice', null, array(
+            'choices' => array(
+                'meter' => 'm',
+                'millimeter' => 'mm',
+                'micrometer' => chr(181).'meter',
+            ),
+        ));
+
+        $form2 = $this->factory->createNamed('name', 'choice', null, array(
+            'choices' => array(
+                'meter' => 'm',
+                'millimeter' => 'mm',
+                'micrometer' => chr(181).'meter',
+            ),
+        ));
+
+        $form3 = $this->factory->createNamed('name', 'choice', null, array(
+            'choices' => array(
+                'meter' => 'm',
+                'millimeter' => 'mm',
+                'micrometer' => null,
+            ),
+        ));
+
+        // $form1 and $form2 use the same ChoiceList
+        $this->assertSame(
+            $form1->getConfig()->getOption('choice_list'),
+            $form2->getConfig()->getOption('choice_list')
+        );
+
+        // $form3 doesn't, but used to use the same when using json_encode()
+        // instead of serialize for the hashing algorithm
+        $this->assertNotSame(
+            $form1->getConfig()->getOption('choice_list'),
+            $form3->getConfig()->getOption('choice_list')
+        );
     }
 
     public function testInitializeWithDefaultObjectChoice()

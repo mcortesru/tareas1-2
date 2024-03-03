@@ -19,13 +19,13 @@ namespace Symfony\Component\PropertyAccess;
 interface PropertyAccessorInterface
 {
     /**
-     * Sets the value at the end of the property path of the object
+     * Sets the value at the end of the property path of the object.
      *
      * Example:
      *
      *     use Symfony\Component\PropertyAccess\PropertyAccess;
      *
-     *     $propertyAccessor = PropertyAccess::getPropertyAccessor();
+     *     $propertyAccessor = PropertyAccess::createPropertyAccessor();
      *
      *     echo $propertyAccessor->setValue($object, 'child.name', 'Fabien');
      *     // equals echo $object->getChild()->setName('Fabien');
@@ -44,19 +44,18 @@ interface PropertyAccessorInterface
      * @param mixed                        $value         The value to set at the end of the property path
      *
      * @throws Exception\NoSuchPropertyException If a property does not exist or is not public.
-     * @throws Exception\UnexpectedTypeException If a value within the path is neither object
-     *                                           nor array
+     * @throws Exception\UnexpectedTypeException If a value within the path is neither object nor array.
      */
     public function setValue(&$objectOrArray, $propertyPath, $value);
 
     /**
-     * Returns the value at the end of the property path of the object
+     * Returns the value at the end of the property path of the object.
      *
      * Example:
      *
      *     use Symfony\Component\PropertyAccess\PropertyAccess;
      *
-     *     $propertyAccessor = PropertyAccess::getPropertyAccessor();
+     *     $propertyAccessor = PropertyAccess::createPropertyAccessor();
      *
      *     echo $propertyAccessor->getValue($object, 'child.name);
      *     // equals echo $object->getChild()->getName();

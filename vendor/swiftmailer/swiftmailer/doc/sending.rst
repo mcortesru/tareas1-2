@@ -10,7 +10,7 @@ create the Mailer, then you use the Mailer to send the message.
 To send a Message:
 
 * Create a Transport from one of the provided Transports --
-  ``Swift_SmtpTransport``, ``Swift_SendmailTransport``, ``Swift_MailTransport`` 
+  ``Swift_SmtpTransport``, ``Swift_SendmailTransport``
   or one of the aggregate Transports.
 
 * Create an instance of the ``Swift_Mailer`` class, using the Transport as
@@ -46,13 +46,10 @@ recipients are delivered to successfully then the value 5 will be returned.
       ;
 
     /*
-    You could alternatively use a different transport such as Sendmail or Mail:
+    You could alternatively use a different transport such as Sendmail:
 
     // Sendmail
     $transport = Swift_SendmailTransport::newInstance('/usr/sbin/sendmail -bs');
-
-    // Mail
-    $transport = Swift_MailTransport::newInstance();
     */
 
     // Create the Mailer using your created Transport
@@ -64,7 +61,7 @@ recipients are delivered to successfully then the value 5 will be returned.
       ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
       ->setBody('Here is the message itself')
       ;
-  
+
     // Send the message
     $result = $mailer->send($message);
 
@@ -108,7 +105,7 @@ easily store the SMTP server address and port number in a configuration file
 within your application and adjust the settings accordingly if the code is
 moved or if the SMTP server is changed.
 
-Some SMTP servers -- Google for example -- use encryption for security reasons. 
+Some SMTP servers -- Google for example -- use encryption for security reasons.
 Swift Mailer supports using both SSL and TLS encryption settings.
 
 Using the SMTP Transport
@@ -170,7 +167,7 @@ settings.
 
 .. note::
 
-    For SSL or TLS encryption to work your PHP installation must have 
+    For SSL or TLS encryption to work your PHP installation must have
     appropriate OpenSSL transports wrappers. You can check if "tls" and/or
     "ssl" are present in your PHP installation by using the PHP function
     ``stream_get_transports()``
@@ -210,7 +207,7 @@ To use a username and password with the SMTP Transport:
 Your username and password will be used to authenticate upon first connect
 when ``send()`` are first used on the Mailer.
 
-If authentication fails, an Exception of type ``Swift_TransportException`` will 
+If authentication fails, an Exception of type ``Swift_TransportException`` will
 be thrown.
 
 .. note::
@@ -294,7 +291,7 @@ flags). Swift Mailer supports operational modes of "``-bs``" (default) and
 
 .. note::
 
-    If you run sendmail in "``-t``" mode you will get no feedback as to whether 
+    If you run sendmail in "``-t``" mode you will get no feedback as to whether
     or not sending has succeeded. Use "``-bs``" unless you have a reason not to.
 
 To use the Sendmail Transport:
@@ -335,9 +332,9 @@ SMTP.
 In order for the ``mail()`` function to even work at all ``php.ini`` needs to be
 configured correctly, specifying the location of sendmail or of an SMTP server.
 
-The problem with ``mail()`` is that it "tries" to simplify things to the point 
-that it actually makes things more complex due to poor interface design. The 
-developers of Swift Mailer have gone to a lot of effort to make the Mail 
+The problem with ``mail()`` is that it "tries" to simplify things to the point
+that it actually makes things more complex due to poor interface design. The
+developers of Swift Mailer have gone to a lot of effort to make the Mail
 Transport work with a reasonable degree of consistency.
 
 Serious drawbacks when using this Transport are:
@@ -349,39 +346,6 @@ Serious drawbacks when using this Transport are:
 * Lack of support for several plugins that require real-time delivery feedback
 
 It's a last resort, and we say that with a passion!
-
-Using the Mail Transport
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-To use the Mail Transport you simply need to call
-``Swift_MailTransport::newInstance()``. It's unlikely you'll need to configure
-the Transport.
-
-To use the Mail Transport:
-
-* Call ``Swift_MailTransport::newInstance()``.
-
-* Use the returned object to create the Mailer.
-
-Messages will be sent using the ``mail()`` function.
-
-.. note::
-
-    The ``mail()`` function can take a ``$additional_parameters`` parameter.
-    Swift Mailer sets this to "``-f%s``" by default, where the "%s" is
-    substituted with the address of the sender (via a ``sprintf()``) at send
-    time. You may override this default by passing an argument to
-    ``newInstance()``.
-
-    .. code-block:: php
-
-        require_once 'lib/swift_required.php';
-
-        // Create the Transport
-        $transport = Swift_MailTransport::newInstance();
-
-        // Create the Mailer using your created Transport
-        $mailer = Swift_Mailer::newInstance($transport);
 
 Available Methods for Sending Messages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -414,7 +378,7 @@ To send a Message with ``send()``:
 
 * Create a Transport from one of the provided Transports --
   ``Swift_SmtpTransport``, ``Swift_SendmailTransport``,
-  ``Swift_MailTransport`` or one of the aggregate Transports.
+  or one of the aggregate Transports.
 
 * Create an instance of the ``Swift_Mailer`` class, using the Transport as
   it's constructor parameter.
@@ -446,7 +410,7 @@ recipients are delivered to successfully then the value 5 will be returned.
       ->setTo(array('receiver@domain.org', 'other@domain.org' => 'A name'))
       ->setBody('Here is the message itself')
       ;
-  
+
     // Send the message
     $numSent = $mailer->send($message);
 
@@ -454,7 +418,7 @@ recipients are delivered to successfully then the value 5 will be returned.
 
     /* Note that often that only the boolean equivalent of the
        return value is of concern (zero indicates FALSE)
-   
+
     if ($mailer->send($message))
     {
       echo "Sent\n";
@@ -474,7 +438,7 @@ own address shows up in the ``To:`` field, follow the following recipe:
 
 * Create a Transport from one of the provided Transports --
   ``Swift_SmtpTransport``, ``Swift_SendmailTransport``,
-  ``Swift_MailTransport`` or one of the aggregate Transports.
+  or one of the aggregate Transports.
 
 * Create an instance of the ``Swift_Mailer`` class, using the Transport as
   it's constructor parameter.

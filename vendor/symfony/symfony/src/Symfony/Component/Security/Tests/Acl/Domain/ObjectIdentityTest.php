@@ -12,6 +12,7 @@
 namespace Symfony\Component\Security\Tests\Acl\Domain
 {
     use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
+    use Symfony\Component\Security\Acl\Model\DomainObjectInterface;
 
     class ObjectIdentityTest extends \PHPUnit_Framework_TestCase
     {
@@ -34,17 +35,7 @@ namespace Symfony\Component\Security\Tests\Acl\Domain
 
         public function testFromDomainObjectPrefersInterfaceOverGetId()
         {
-            $domainObject = $this->getMock('Symfony\Component\Security\Acl\Model\DomainObjectInterface');
-            $domainObject
-                ->expects($this->once())
-                ->method('getObjectIdentifier')
-                ->will($this->returnValue('getObjectIdentifier()'))
-            ;
-            $domainObject
-                ->expects($this->never())
-                ->method('getId')
-                ->will($this->returnValue('getId()'))
-            ;
+            $domainObject = new DomainObjectImplementation();
 
             $id = ObjectIdentity::fromDomainObject($domainObject);
             $this->assertEquals('getObjectIdentifier()', $id->getIdentifier());
@@ -61,6 +52,26 @@ namespace Symfony\Component\Security\Tests\Acl\Domain
         {
             $id = ObjectIdentity::fromDomainObject(new \Acme\DemoBundle\Proxy\__CG__\Symfony\Component\Security\Tests\Acl\Domain\TestDomainObject());
             $this->assertEquals('getId()', $id->getIdentifier());
+            $this->assertEquals('Symfony\Component\Security\Tests\Acl\Domain\TestDomainObject', $id->getType());
+        }
+
+        public function testFromDomainObjectWithoutInterfaceEnforcesStringIdentifier()
+        {
+            $domainObject = new TestDomainObject();
+            $domainObject->id = 1;
+            $id = ObjectIdentity::fromDomainObject($domainObject);
+
+            $this->assertSame('1', $id->getIdentifier());
+            $this->assertEquals('Symfony\Component\Security\Tests\Acl\Domain\TestDomainObject', $id->getType());
+        }
+
+        public function testFromDomainObjectWithoutInterfaceAllowsZeroAsIdentifier()
+        {
+            $domainObject = new TestDomainObject();
+            $domainObject->id = '0';
+            $id = ObjectIdentity::fromDomainObject($domainObject);
+
+            $this->assertSame('0', $id->getIdentifier());
             $this->assertEquals('Symfony\Component\Security\Tests\Acl\Domain\TestDomainObject', $id->getType());
         }
 
@@ -85,16 +96,24 @@ namespace Symfony\Component\Security\Tests\Acl\Domain
                 array(new ObjectIdentity('1', 'bla'), new ObjectIdentity('1', 'blub'), false),
             );
         }
-
-        protected function setUp()
-        {
-            if (!class_exists('Doctrine\DBAL\DriverManager')) {
-                $this->markTestSkipped('The Doctrine2 DBAL is required for this test');
-            }
-        }
     }
 
     class TestDomainObject
+    {
+        public $id = 'getId()';
+
+        public function getObjectIdentifier()
+        {
+            return 'getObjectIdentifier()';
+        }
+
+        public function getId()
+        {
+            return $this->id;
+        }
+    }
+
+    class DomainObjectImplementation implements DomainObjectInterface
     {
         public function getObjectIdentifier()
         {

@@ -18,15 +18,6 @@ use Doctrine\ORM\Tools\SchemaTool;
 
 class EntityUserProviderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-        if (!class_exists('Symfony\Component\Security\Core\SecurityContext')) {
-            $this->markTestSkipped('The "Security" component is not available');
-        }
-
-        parent::setUp();
-    }
-
     public function testRefreshUserGetsUserByPrimaryKey()
     {
         $em = DoctrineTestHelper::createTestEntityManager();
@@ -101,7 +92,7 @@ class EntityUserProviderTest extends \PHPUnit_Framework_TestCase
     private function getManager($em, $name = null)
     {
         $manager = $this->getMock('Doctrine\Common\Persistence\ManagerRegistry');
-        $manager->expects($this->once())
+        $manager->expects($this->any())
             ->method('getManager')
             ->with($this->equalTo($name))
             ->will($this->returnValue($em));

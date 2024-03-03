@@ -28,7 +28,7 @@ class FormValidatorPerformanceTest extends FormPerformanceTestCase
     }
 
     /**
-     * findClickedButton() used to have an exponential number of calls
+     * findClickedButton() used to have an exponential number of calls.
      *
      * @group benchmark
      */
@@ -38,7 +38,7 @@ class FormValidatorPerformanceTest extends FormPerformanceTestCase
 
         $builder = $this->factory->createBuilder('form');
 
-        for ($i = 0; $i < 100; ++$i) {
+        for ($i = 0; $i < 40; ++$i) {
             $builder->add($i, 'form');
 
             $builder->get($i)

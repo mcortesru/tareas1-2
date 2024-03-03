@@ -24,37 +24,36 @@ class PropertyPath implements \IteratorAggregate, PropertyPathInterface
 {
     /**
      * Character used for separating between plural and singular of an element.
+     *
      * @var string
      */
     const SINGULAR_SEPARATOR = '|';
 
     /**
-     * The elements of the property path
+     * The elements of the property path.
+     *
      * @var array
      */
     private $elements = array();
 
     /**
-     * The singular forms of the elements in the property path.
-     * @var array
-     */
-    private $singulars = array();
-
-    /**
-     * The number of elements in the property path
-     * @var integer
+     * The number of elements in the property path.
+     *
+     * @var int
      */
     private $length;
 
     /**
      * Contains a Boolean for each property in $elements denoting whether this
      * element is an index. It is a property otherwise.
+     *
      * @var array
      */
     private $isIndex = array();
 
     /**
-     * String representation of the path
+     * String representation of the path.
+     *
      * @var string
      */
     private $pathAsString;
@@ -70,10 +69,9 @@ class PropertyPath implements \IteratorAggregate, PropertyPathInterface
     public function __construct($propertyPath)
     {
         // Can be used as copy constructor
-        if ($propertyPath instanceof PropertyPath) {
+        if ($propertyPath instanceof self) {
             /* @var PropertyPath $propertyPath */
             $this->elements = $propertyPath->elements;
-            $this->singulars = $propertyPath->singulars;
             $this->length = $propertyPath->length;
             $this->isIndex = $propertyPath->isIndex;
             $this->pathAsString = $propertyPath->pathAsString;
@@ -93,7 +91,7 @@ class PropertyPath implements \IteratorAggregate, PropertyPathInterface
         $remaining = $propertyPath;
 
         // first element is evaluated differently - no leading dot for properties
-        $pattern = '/^(([^\.\[]+)|\[([^\]]+)\])(.*)/';
+        $pattern = '/^(([^\.\[]++)|\[([^\]]++)\])(.*)/';
 
         while (preg_match($pattern, $remaining, $matches)) {
             if ('' !== $matches[2]) {
@@ -103,29 +101,19 @@ class PropertyPath implements \IteratorAggregate, PropertyPathInterface
                 $element = $matches[3];
                 $this->isIndex[] = true;
             }
-            // Disabled this behaviour as the syntax is not yet final
-            //$pos = strpos($element, self::SINGULAR_SEPARATOR);
-            $pos = false;
-            $singular = null;
-
-            if (false !== $pos) {
-                $singular = substr($element, $pos + 1);
-                $element = substr($element, 0, $pos);
-            }
 
             $this->elements[] = $element;
-            $this->singulars[] = $singular;
 
             $position += strlen($matches[1]);
             $remaining = $matches[4];
-            $pattern = '/^(\.(\w+)|\[([^\]]+)\])(.*)/';
+            $pattern = '/^(\.(\w++)|\[([^\]]++)\])(.*)/';
         }
 
         if ('' !== $remaining) {
             throw new InvalidPropertyPathException(sprintf(
                 'Could not parse property path "%s". Unexpected token "%s" at position %d',
                 $propertyPath,
-                $remaining{0},
+                $remaining[0],
                 $position
             ));
         }
@@ -155,7 +143,7 @@ class PropertyPath implements \IteratorAggregate, PropertyPathInterface
     public function getParent()
     {
         if ($this->length <= 1) {
-            return null;
+            return;
         }
 
         $parent = clone $this;
@@ -163,14 +151,13 @@ class PropertyPath implements \IteratorAggregate, PropertyPathInterface
         --$parent->length;
         $parent->pathAsString = substr($parent->pathAsString, 0, max(strrpos($parent->pathAsString, '.'), strrpos($parent->pathAsString, '[')));
         array_pop($parent->elements);
-        array_pop($parent->singulars);
         array_pop($parent->isIndex);
 
         return $parent;
     }
 
     /**
-     * Returns a new iterator for this path
+     * Returns a new iterator for this path.
      *
      * @return PropertyPathIteratorInterface
      */

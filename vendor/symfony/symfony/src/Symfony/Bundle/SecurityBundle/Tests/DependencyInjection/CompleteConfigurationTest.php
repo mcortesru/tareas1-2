@@ -12,7 +12,6 @@
 namespace Symfony\Bundle\SecurityBundle\Tests\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Reference;
-
 use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Bundle\SecurityBundle\SecurityBundle;
 use Symfony\Bundle\SecurityBundle\DependencyInjection\SecurityExtension;
@@ -20,15 +19,17 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 abstract class CompleteConfigurationTest extends \PHPUnit_Framework_TestCase
 {
+    private static $containerCache = array();
+
     abstract protected function loadFromFile(ContainerBuilder $container, $file);
 
     public function testRolesHierarchy()
     {
         $container = $this->getContainer('container1');
         $this->assertEquals(array(
-            'ROLE_ADMIN'       => array('ROLE_USER'),
+            'ROLE_ADMIN' => array('ROLE_USER'),
             'ROLE_SUPER_ADMIN' => array('ROLE_USER', 'ROLE_ADMIN', 'ROLE_ALLOWED_TO_SWITCH'),
-            'ROLE_REMOTE'      => array('ROLE_USER', 'ROLE_ADMIN'),
+            'ROLE_REMOTE' => array('ROLE_USER', 'ROLE_ADMIN'),
         ), $container->getParameter('security.role_hierarchy.roles'));
     }
 
@@ -82,8 +83,8 @@ abstract class CompleteConfigurationTest extends \PHPUnit_Framework_TestCase
                 'security.authentication.listener.basic.secure',
                 'security.authentication.listener.digest.secure',
                 'security.authentication.listener.anonymous.secure',
-                'security.access_listener',
                 'security.authentication.switchuser_listener.secure',
+                'security.access_listener',
             ),
         ), $listeners);
     }
@@ -183,6 +184,9 @@ abstract class CompleteConfigurationTest extends \PHPUnit_Framework_TestCase
 
     protected function getContainer($file)
     {
+        if (isset(self::$containerCache[$file])) {
+            return self::$containerCache[$file];
+        }
         $container = new ContainerBuilder();
         $security = new SecurityExtension();
         $container->registerExtension($security);
@@ -195,6 +199,6 @@ abstract class CompleteConfigurationTest extends \PHPUnit_Framework_TestCase
         $container->getCompilerPassConfig()->setRemovingPasses(array());
         $container->compile();
 
-        return $container;
+        return self::$containerCache[$file] = $container;
     }
 }

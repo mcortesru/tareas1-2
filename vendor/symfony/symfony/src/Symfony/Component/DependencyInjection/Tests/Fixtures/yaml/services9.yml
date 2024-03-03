@@ -8,11 +8,11 @@ services:
         class: FooClass
         tags:
             - { name: foo, foo: foo }
-            - { name: foo, bar: bar }
+            - { name: foo, bar: bar, baz: baz }
         factory_class: FooClass
         factory_method: getInstance
         arguments: [foo, '@foo.baz', { '%foo%': 'foo is %foo%', foobar: '%foo%' }, true, '@service_container']
-        properties: { foo: bar, moo: '@foo.baz' }
+        properties: { foo: bar, moo: '@foo.baz', qux: { '%foo%': 'foo is %foo%', foobar: '%foo%' } }
         calls:
             - [setBar, ['@bar']]
             - [initialize, {  }]
@@ -23,16 +23,16 @@ services:
         arguments: [foo, '@foo.baz', '%foo_bar%']
         configurator: ['@foo.baz', configure]
     foo.baz:
-        class: %baz_class%
-        factory_class: %baz_class%
+        class: '%baz_class%'
+        factory_class: '%baz_class%'
         factory_method: getInstance
         configurator: ['%baz_class%', configureStatic1]
     foo_bar:
-        class: %foo_class%
+        class: '%foo_class%'
         scope: prototype
     method_call1:
         class: FooClass
-        file: %path%foo.php
+        file: '%path%foo.php'
         calls:
             - [setBar, ['@foo']]
             - [setBar, ['@?foo2']]
@@ -50,6 +50,7 @@ services:
 
     inlined:
         class: Bar
+        public: false
         properties: { pub: pub }
         calls:
             - [setBaz, ['@baz']]
@@ -68,5 +69,5 @@ services:
         calls:
             - [setRequest, ['@?request']]
 
-    alias_for_foo: @foo
-    alias_for_alias: @foo
+    alias_for_foo: '@foo'
+    alias_for_alias: '@foo'

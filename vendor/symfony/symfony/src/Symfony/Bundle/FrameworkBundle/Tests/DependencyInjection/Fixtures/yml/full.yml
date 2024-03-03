@@ -13,7 +13,7 @@ framework:
         only_exceptions: true
         enabled: false
     router:
-        resource:     %kernel.root_dir%/config/routing.xml
+        resource:     '%kernel.root_dir%/config/routing.xml'
         type:         xml
     session:
         storage_id:      session.storage.native
@@ -44,6 +44,7 @@ framework:
                 base_urls: ["http://images1.example.com", "http://images2.example.com"]
         form:
             resources:    [theme1, theme2]
+        hinclude_default_template: global_hinclude_template
     translator:
         enabled:  true
         fallback: fr
@@ -53,5 +54,5 @@ framework:
     annotations:
         cache:   file
         debug:   true
-        file_cache_dir: %kernel.cache_dir%/annotations
+        file_cache_dir: '%kernel.cache_dir%/annotations'
     ide: file%%link%%format

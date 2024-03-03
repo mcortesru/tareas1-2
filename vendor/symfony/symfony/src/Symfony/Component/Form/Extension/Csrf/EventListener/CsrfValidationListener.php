@@ -24,19 +24,21 @@ use Symfony\Component\Translation\TranslatorInterface;
 class CsrfValidationListener implements EventSubscriberInterface
 {
     /**
-     * The name of the CSRF field
+     * The name of the CSRF field.
+     *
      * @var string
      */
     private $fieldName;
 
     /**
-     * The provider for generating and validating CSRF tokens
+     * The provider for generating and validating CSRF tokens.
+     *
      * @var CsrfProviderInterface
      */
     private $csrfProvider;
 
     /**
-     * A text mentioning the intention of the CSRF token
+     * A text mentioning the intention of the CSRF token.
      *
      * Validation of the token will only succeed if it was generated in the
      * same session and with the same intention.
@@ -47,6 +49,7 @@ class CsrfValidationListener implements EventSubscriberInterface
 
     /**
      * The message displayed in case of an error.
+     *
      * @var string
      */
     private $errorMessage;
@@ -81,9 +84,10 @@ class CsrfValidationListener implements EventSubscriberInterface
     public function preSubmit(FormEvent $event)
     {
         $form = $event->getForm();
-        $data = $event->getData();
 
         if ($form->isRoot() && $form->getConfig()->getOption('compound')) {
+            $data = $event->getData();
+
             if (!isset($data[$this->fieldName]) || !$this->csrfProvider->isCsrfTokenValid($this->intention, $data[$this->fieldName])) {
                 $errorMessage = $this->errorMessage;
 
@@ -96,10 +100,9 @@ class CsrfValidationListener implements EventSubscriberInterface
 
             if (is_array($data)) {
                 unset($data[$this->fieldName]);
+                $event->setData($data);
             }
         }
-
-        $event->setData($data);
     }
 
     /**
