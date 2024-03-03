@@ -11,7 +11,7 @@ class DefaultController extends Controller
         return $this->render('ARSOFTArticuloBundle:Default:index.html.twig', array('name' => $name));
     }
 
-    public function listarAction()
+    public function listarArticulosAction()
     {
         $articulos = [
             ['id' => 1, 'title' => 'Artículo 1', 'created' => '2024-02-01'],

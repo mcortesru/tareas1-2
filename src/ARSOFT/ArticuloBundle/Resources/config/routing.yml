@@ -4,7 +4,7 @@ arsoft_articulo_homepage:
 
 arsoft_articulos_index:
     pattern: /listado
-    defaults: { _controller: ARSOFTArticuloBundle:Default:listar }
+    defaults: { _controller: ARSOFTArticuloBundle:Default:listarArticulos }
 
 arsoft_articulos_show:
     pattern: /articulos/{id}

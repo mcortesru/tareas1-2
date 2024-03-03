@@ -1,10 +1,6 @@
 <<<<<<< HEAD
 # symphony
-Entrega de Symphony - Tareas 1 y 2 (Mario)
 
-
-composer install
-=======
 Symfony Standard Edition
 ========================
 
