@@ -11,23 +11,25 @@ class DefaultController extends Controller
         return $this->render('ARSOFTArticuloBundle:Default:index.html.twig', array('name' => $name));
     }
 
-    public function listarArticulosAction()
+    public function listar_articulosAction()
     {
         $articulos = [
-            ['id' => 1, 'title' => 'Artículo 1', 'created' => '2024-02-01'],
-            ['id' => 2, 'title' => 'Artículo 2', 'created' => '2024-02-02'],
-            ['id' => 3, 'title' => 'Artículo 3', 'created' => '2024-02-03'],
+            ['id' => 1, 'title' => 'Artículo 1', 'created' => '2024-02-01', 'image' => 'images/articulo1.jpg'],
+            ['id' => 2, 'title' => 'Artículo 2', 'created' => '2024-02-02', 'image' => 'images/articulo2.jpg'],
+            ['id' => 3, 'title' => 'Artículo 3', 'created' => '2024-02-03', 'image' => 'images/articulo3.jpg'],
         ];
-        return $this->render('ARSOFTArticuloBundle:MisVistas:listarArticulos.html.twig', array('articulos' => $articulos));
+        
+        return $this->render('ARSOFTArticuloBundle:MisVistas:listar_articulos.html.twig', array('articulos' => $articulos));
     }
 
-    public function showAction($id)
+    public function mostrar_articuloAction($id)
     {
         $articulos = [
-            ['id' => 1, 'title' => 'Artículo 1', 'created' => '2024-02-01'],
-            ['id' => 2, 'title' => 'Artículo 2', 'created' => '2024-02-02'],
-            ['id' => 3, 'title' => 'Artículo 3', 'created' => '2024-02-03'],
+            ['id' => 1, 'title' => 'Artículo 1', 'created' => '2024-02-01', 'image' => 'images/articulo1.jpg'],
+            ['id' => 2, 'title' => 'Artículo 2', 'created' => '2024-02-02', 'image' => 'images/articulo2.jpg'],
+            ['id' => 3, 'title' => 'Artículo 3', 'created' => '2024-02-03', 'image' => 'images/articulo3.jpg'],
         ];
+        
 
         // Simular la búsqueda de un artículo por ID
         $articulo = null;
@@ -38,6 +40,6 @@ class DefaultController extends Controller
             }
         }
 
-        return $this->render('ARSOFTArticuloBundle:MisVistas:show.html.twig', array('articulo' => $articulo));
+        return $this->render('ARSOFTArticuloBundle:MisVistas:mostrar_articulo.html.twig', array('articulo' => $articulo));
     }
 }

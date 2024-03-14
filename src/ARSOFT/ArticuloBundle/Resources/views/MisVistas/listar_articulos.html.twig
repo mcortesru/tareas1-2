@@ -1,0 +1,8 @@
+{# listar_articulos.html.twig #}
+<ul>
+    {% for articulo in articulos %}
+        <li>
+            <a href="{{ path('mostrar_articulo', {'id': articulo.id}) }}">{{ articulo.title }}</a>
+        </li>
+    {% endfor %}
+</ul>

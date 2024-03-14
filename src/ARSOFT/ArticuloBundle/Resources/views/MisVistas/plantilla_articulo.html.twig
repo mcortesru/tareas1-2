@@ -1,0 +1,17 @@
+{# src/ARSOFT/ArticuloBundle/Resources/views/MisVistas/plantilla_articulo.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+  <div class="content">
+    {% block content %}
+    <!-- El contenido específico del artículo se irá aquí -->
+    {% endblock content %}
+  </div>
+
+  <footer>
+    {{ "now"|date("Y-m-d") }}
+  </footer>
+{% endblock %}

@@ -1,14 +1,11 @@
 arsoft_articulo_homepage:
-    pattern:  /hello/{name}
+    path: /hello/{name}
     defaults: { _controller: ARSOFTArticuloBundle:Default:index }
 
 arsoft_articulos_index:
-    pattern: /listado
-    defaults: { _controller: ARSOFTArticuloBundle:Default:listarArticulos }
+    path: /listado
+    defaults: { _controller: ARSOFTArticuloBundle:Default:listar_articulos }
 
-arsoft_articulos_show:
-    pattern: /articulos/{id}
-    defaults: { _controller: ARSOFTArticuloBundle:Default:show, id: 2 }
-
-
-
+mostrar_articulo:
+    path: /articulos/{id}
+    defaults: { _controller: ARSOFTArticuloBundle:Default:mostrar_articulo, id: 2 }

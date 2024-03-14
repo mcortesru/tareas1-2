@@ -1,0 +1,11 @@
+{# src/ARSOFT/ArticuloBundle/Resources/views/MisVistas/mostrar_articulo.html.twig #}
+
+{% extends 'ARSOFTArticuloBundle:MisVistas:plantilla_articulo.html.twig' %}
+
+{% block content %}
+    <article>
+        <h2>{{ articulo.title }}</h2>
+        <img src="{{ asset(articulo.image) }}" alt="Imagen del artículo">
+        <p>Publicado el: {{ articulo.created }}</p>
+    </article>
+{% endblock %}
