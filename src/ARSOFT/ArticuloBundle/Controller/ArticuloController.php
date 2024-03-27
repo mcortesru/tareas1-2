@@ -38,7 +38,6 @@ class ArticuloController extends Controller
         return $this->redirect($this->generateUrl('listar_articulos'));
     }
 
-
     public function modificarTituloAction($id, $titulo_nuevo)
     {
         $em = $this->getDoctrine()->getManager();
@@ -53,9 +52,6 @@ class ArticuloController extends Controller
 
         return $this->redirect('/articulo/listar');
     }   
-
-    
-    
 
     public function eliminarArticuloAction($id)
     {
@@ -72,7 +68,6 @@ class ArticuloController extends Controller
         return $this->redirect('/articulo/listar');
     }
     
-
     public function visualizarArticuloAction($id)
     {
         $em = $this->getDoctrine()->getManager();

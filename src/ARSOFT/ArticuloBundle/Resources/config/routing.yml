@@ -12,31 +12,26 @@
 
 
 
-#OK
 listar_articulos:
     path: /articulo/listar
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:listarArticulos' }
 
-#OK
 crear_articulo:
     path: /articulo/crear
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:crearArticulo' }
 
-#OK
 modificar_articulo:
     path: /articulo/modificar/{id}/{titulo_nuevo}
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:modificarTitulo' }
     requirements:
         id: \d+
 
-#OK
 eliminar_articulo:
     path: /articulo/eliminar/{id}
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:eliminarArticulo' }
     requirements:
         id: \d+
 
-#OK
 mostrar_articulo:
     path: /articulo/mostrar/{id}
     defaults: { _controller: ARSOFTArticuloBundle:Articulo:visualizarArticulo }
