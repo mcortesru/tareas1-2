@@ -4,8 +4,12 @@
 
 {% block content %}
     <article>
-        <h2>{{ articulo.title }}</h2>
-        <img src="{{ asset(articulo.image) }}" alt="Imagen del artículo">
-        <p>Publicado el: {{ articulo.created }}</p>
+        <h2>{{ articulo.titulo }}</h2>
+        <!-- Si deseas mostrar el autor o la categoría, puedes hacerlo aquí -->
+        <p>Autor: {{ articulo.autor }}</p>
+        <p>Categoría: {{ articulo.categoria }}</p>
+        <!-- No tienes una propiedad 'image', por lo que se omite cualquier referencia a ella -->
+        <p>Publicado el: {{ articulo.creado|date('Y-m-d') }}</p>
+        <div>{{ articulo.contenido }}</div>
     </article>
 {% endblock %}
