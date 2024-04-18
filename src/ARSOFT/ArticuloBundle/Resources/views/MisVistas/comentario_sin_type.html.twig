@@ -1,0 +1,4 @@
+<form action="{{ path('comentario_crear_sin_type', {'articuloId': articulo.id}) }}" method="post" {{ form_enctype(form) }}>
+    {{ form_errors(form) }}
+    {{ form_widget(form) }}
+</form>

@@ -33,4 +33,49 @@ class Comentario
      * @ORM\JoinColumn(name="articulo_id", referencedColumnName="id")
      */
     protected $articulo;
+
+    public function setAutor($autor)
+    {
+        $this->autor = $autor;
+        return $this;
+    }
+
+    public function getAutor()
+    {
+        return $this->autor;
+    }
+
+    public function setArticulo(\ARSOFT\ArticuloBundle\Entity\Articulo $articulo = null)
+    {
+        $this->articulo = $articulo;
+        return $this;
+    }
+
+    public function getArticulo()
+    {
+        return $this->articulo;
+    }
+
+    public function setContenido($contenido)
+    {
+        $this->contenido = $contenido;
+        return $this;
+    }
+
+    public function getContenido()
+    {
+        return $this->contenido;
+    }
+
+    public function setRespuesta($respuesta)
+    {
+        $this->respuesta = $respuesta;
+        return $this;
+    }
+
+    public function getRespuesta()
+    {
+        return $this->respuesta;
+    }
+
 }

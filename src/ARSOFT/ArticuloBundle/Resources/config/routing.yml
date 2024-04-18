@@ -1,17 +1,3 @@
-#arsoft_articulo_homepage:
-#    path: /hello/{name}
-#    defaults: { _controller: ARSOFTArticuloBundle:Default:index }
-
-#arsoft_articulos_index:
-#    path: /listado
-#    defaults: { _controller: ARSOFTArticuloBundle:Default:listar_articulos }
-
-#mostrar_articulo:
-#    path: /articulos/{id}
-#    defaults: { _controller: ARSOFTArticuloBundle:Default:mostrar_articulo, id: 2 }
-
-
-
 listar_articulos:
     path: /articulo/listar
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:listarArticulos' }
@@ -37,3 +23,14 @@ mostrar_articulo:
     defaults: { _controller: ARSOFTArticuloBundle:Articulo:visualizarArticulo }
     requirements:
         id: \d+
+
+comentario_crear_sin_type:
+    path: /articulo/{articuloId}/comentario/crear
+    defaults: { _controller: ARSOFTArticuloBundle:Comentario:crearComentarioSinType }
+
+comentario_crear_con_type:
+    path: /articulo/{articuloId}/comentario/crearType
+    defaults: { _controller: ARSOFTArticuloBundle:Comentario:crearComentarioConType }
+
+
+

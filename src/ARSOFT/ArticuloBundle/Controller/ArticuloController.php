@@ -1,9 +1,13 @@
 <?php
 namespace ARSOFT\ArticuloBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use ARSOFT\ArticuloBundle\Entity\Articulo;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+
+
 
 class ArticuloController extends Controller
 {
@@ -19,23 +23,33 @@ class ArticuloController extends Controller
 
     public function crearArticuloAction(Request $request)
     {
-        $titulo = $request->query->get('titulo');
-        $autor = $request->query->get('autor');
-        $contenido = $request->query->get('contenido');
-        $categoria = $request->query->get('categoria');
-
         $articulo = new Articulo();
-        $articulo->setTitulo($titulo);
-        $articulo->setAutor($autor);
-        $articulo->setContenido($contenido);
-        $articulo->setCategoria($categoria);
-        $articulo->setCreado(new \DateTime());
+        $form = $this->createFormBuilder($articulo)
+            ->add('titulo', 'text', array(
+                'constraints' => new NotBlank()
+            ))
+            ->add('autor', 'text')
+            ->add('contenido', 'textarea')
+            ->add('categoria', 'text')
+            ->add('creado', 'date', array(
+                'widget' => 'single_text'
+            ))
+            ->add('guardar', 'submit', array('label' => 'Crear Artículo'))
+            ->getForm();
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($articulo);
-        $em->flush();
+        $form->handleRequest($request);
 
-        return $this->redirect($this->generateUrl('listar_articulos'));
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($articulo);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('listar_articulos'));
+        }
+
+        return $this->render('ARSOFTArticuloBundle:MisVistas:crear_articulo.html.twig', array(
+            'form' => $form->createView(),
+        ));
     }
 
     public function modificarTituloAction($id, $titulo_nuevo)
