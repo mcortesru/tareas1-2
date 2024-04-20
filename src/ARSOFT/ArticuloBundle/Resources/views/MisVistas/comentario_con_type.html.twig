@@ -1,9 +1,8 @@
-{# ARSOFTArticuloBundle:Comentario:comentario_con_type.html.twig #}
-<h1>Agregar Comentario</h1>
+<h1>Agregar Comentario usando type</h1>
 
 {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit">Enviar Comentario</button>
 {{ form_end(form) }}
 
-<a href="{{ path('articulo_show', {'id': articuloId}) }}">Volver al artículo</a>
+<a href="{{ path('mostrar_articulo', {'id': articuloId}) }}">Volver al artículo</a>

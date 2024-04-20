@@ -1,4 +1,10 @@
-<form action="{{ path('comentario_crear_sin_type', {'articuloId': articulo.id}) }}" method="post" {{ form_enctype(form) }}>
+<h1>Agregar Comentario sin usar type</h1>
+
+<form action="{{ path('comentario_crear_sin_type', {articuloId}) }}" method="post" {{ form_enctype(form) }}>
     {{ form_errors(form) }}
     {{ form_widget(form) }}
+    <button type="submit">Enviar</button>
 </form>
+
+<a href="{{ path('mostrar_articulo', {'id': articuloId}) }}">Volver al artículo</a>
+

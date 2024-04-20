@@ -1,0 +1,10 @@
+<h1>Crear Artículo sin usar type</h1>
+
+
+<form action="{{ path('crear_articulo_sin_type') }}" method="post" {{ form_enctype(form) }}>
+    {{ form_errors(form) }}
+    {{ form_widget(form) }}
+    <button type="submit">Crear Artículo</button>
+</form>
+
+<a href="{{ path('listar_articulos') }}">Volver a la lista de artículos</a>

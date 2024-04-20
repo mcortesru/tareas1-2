@@ -1,5 +1,3 @@
-{# src/ARSOFT/ArticuloBundle/Resources/views/MisVistas/mostrar_articulo.html.twig #}
-
 {% extends 'ARSOFTArticuloBundle:MisVistas:plantilla_articulo.html.twig' %}
 
 {% block content %}
@@ -12,4 +10,25 @@
         <p>Publicado el: {{ articulo.creado|date('Y-m-d') }}</p>
         <div>{{ articulo.contenido }}</div>
     </article>
+    <br>
+    <a href="{{ path('listar_articulos') }}">Ver lista de artículos</a>
+    <br>
+    <a href="{{ path('comentario_crear_con_type', {'articuloId': articulo.id}) }}">Crear comentario con Type</a>
+    <br>
+    <a href="{{ path('comentario_crear_sin_type', {'articuloId': articulo.id}) }}">Crear comentario sin Type</a>
+
+    <section>
+        <h3>Comentarios</h3>
+        {% if comentarios is not empty %}
+            {% for comentario in comentarios %}
+                <div class="comentario">
+                    <p><strong>{{ comentario.autor }}</strong> ({{ comentario.respuesta }}) dice:</p>
+                    <blockquote>{{ comentario.contenido }}</blockquote>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay comentarios para este artículo.</p>
+        {% endif %}
+    </section>
+
 {% endblock %}

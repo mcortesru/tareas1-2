@@ -89,4 +89,9 @@ class Articulo
     {
         $this->categoria = $categoria;
     }
+
+    public function __toString()
+    {
+        return $this->getTitulo(); // Suponiendo que 'titulo' sea una propiedad de tu entidad Articulo
+    }
 }

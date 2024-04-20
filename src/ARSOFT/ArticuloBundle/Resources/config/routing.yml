@@ -1,35 +1,39 @@
 listar_articulos:
-    path: /articulo/listar
+    path: /articulos
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:listarArticulos' }
 
-crear_articulo:
-    path: /articulo/crear
-    defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:crearArticulo' }
+crear_articulo_sin_type:
+    path: /articulos/crear
+    defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:crearArticuloSinType' }
+
+crear_articulo_con_type:
+    path: /articulos/crearType
+    defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:crearArticuloConType' }
 
 modificar_articulo:
-    path: /articulo/modificar/{id}/{titulo_nuevo}
+    path: /articulos/modificar/{id}/{titulo_nuevo}
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:modificarTitulo' }
     requirements:
         id: \d+
 
 eliminar_articulo:
-    path: /articulo/eliminar/{id}
+    path: /articulos/eliminar/{id}
     defaults: { _controller: 'ARSOFTArticuloBundle:Articulo:eliminarArticulo' }
     requirements:
         id: \d+
 
 mostrar_articulo:
-    path: /articulo/mostrar/{id}
+    path: /articulos/{id}
     defaults: { _controller: ARSOFTArticuloBundle:Articulo:visualizarArticulo }
     requirements:
         id: \d+
 
 comentario_crear_sin_type:
-    path: /articulo/{articuloId}/comentario/crear
+    path: /articulos/{articuloId}/comentario/crear
     defaults: { _controller: ARSOFTArticuloBundle:Comentario:crearComentarioSinType }
 
 comentario_crear_con_type:
-    path: /articulo/{articuloId}/comentario/crearType
+    path: /articulos/{articuloId}/comentario/crearType
     defaults: { _controller: ARSOFTArticuloBundle:Comentario:crearComentarioConType }
 
 

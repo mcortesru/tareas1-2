@@ -4,8 +4,7 @@ namespace ARSOFT\ArticuloBundle\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use ARSOFT\ArticuloBundle\Entity\Articulo;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Validator\Constraints\NotBlank;
-
+use ARSOFT\ArticuloBundle\Form\ArticuloType;
 
 
 
@@ -21,37 +20,6 @@ class ArticuloController extends Controller
         ));
     }
 
-    public function crearArticuloAction(Request $request)
-    {
-        $articulo = new Articulo();
-        $form = $this->createFormBuilder($articulo)
-            ->add('titulo', 'text', array(
-                'constraints' => new NotBlank()
-            ))
-            ->add('autor', 'text')
-            ->add('contenido', 'textarea')
-            ->add('categoria', 'text')
-            ->add('creado', 'date', array(
-                'widget' => 'single_text'
-            ))
-            ->add('guardar', 'submit', array('label' => 'Crear Artículo'))
-            ->getForm();
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($articulo);
-            $em->flush();
-
-            return $this->redirect($this->generateUrl('listar_articulos'));
-        }
-
-        return $this->render('ARSOFTArticuloBundle:MisVistas:crear_articulo.html.twig', array(
-            'form' => $form->createView(),
-        ));
-    }
-
     public function modificarTituloAction($id, $titulo_nuevo)
     {
         $em = $this->getDoctrine()->getManager();
@@ -64,7 +32,7 @@ class ArticuloController extends Controller
         $articulo->setTitulo($titulo_nuevo);
         $em->flush();
 
-        return $this->redirect('/articulo/listar');
+        return $this->redirect('/articulos');
     }   
 
     public function eliminarArticuloAction($id)
@@ -79,7 +47,7 @@ class ArticuloController extends Controller
         $em->remove($articulo);
         $em->flush();
     
-        return $this->redirect('/articulo/listar');
+        return $this->redirect('/articulos');
     }
     
     public function visualizarArticuloAction($id)
@@ -91,9 +59,65 @@ class ArticuloController extends Controller
             throw $this->createNotFoundException('No se encontró el artículo solicitado.');
         }
     
+        $comentarios = $em->getRepository('ARSOFTArticuloBundle:Comentario')->findBy(['articulo' => $articulo]);
+            
         return $this->render('ARSOFTArticuloBundle:MisVistas:mostrar_articulo.html.twig', array(
             'articulo' => $articulo,
+            'comentarios' => $comentarios
         ));
     }
     
+
+    public function crearArticuloSinTypeAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $articulo = new Articulo();
+        
+        $form = $this->createFormBuilder($articulo)
+            ->add('titulo', 'text')
+            ->add('autor', 'text')
+            ->add('contenido', 'textarea')
+            ->add('categoria', 'text')
+            ->add('creado', 'date')
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($articulo);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('mostrar_articulo', array('id' => $articulo->getId())));
+        }
+
+        return $this->render('ARSOFTArticuloBundle:MisVistas:crear_articulo_sin_type.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    public function crearArticuloConTypeAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $articulo = new Articulo();
+
+        // Crear un formulario para el artículo utilizando un 'ArticuloType' personalizado
+        $form = $this->createForm(new ArticuloType());
+
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($articulo);
+            $em->flush();
+
+            // Redirigir a una página que muestra el artículo
+            return $this->redirect($this->generateUrl('ver_articulo', ['id' => $articulo->getId()]));
+        }
+
+        // Renderizar la vista del formulario
+        return $this->render('ARSOFTArticuloBundle:MisVistas:crear_articulo_con_type.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

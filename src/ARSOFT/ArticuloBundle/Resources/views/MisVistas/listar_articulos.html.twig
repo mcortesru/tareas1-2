@@ -1,4 +1,12 @@
-{# listar_articulos.html.twig #}
+
+<h1>Listado de articulos:</h1>
+
+<br>
+<a href="{{ path('crear_articulo_con_type') }}">Añadir articulo con type/a>
+<br>
+<a href="{{ path('crear_articulo_sin_type') }}">Añadir articulo sin type/a>
+
+
 <ul>
     {% for articulo in articulos %}
         <li>
